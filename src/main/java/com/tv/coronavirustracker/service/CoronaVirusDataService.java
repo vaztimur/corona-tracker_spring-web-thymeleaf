@@ -1,6 +1,7 @@
 package com.tv.coronavirustracker.service;
 
 
+import com.tv.coronavirustracker.models.LocationStats;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +16,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /*
@@ -31,9 +34,13 @@ public class CoronaVirusDataService {
     *
     * */
 
+    private List<LocationStats> allStats = new ArrayList<>(); //usually not good to create state inside a service in spring
+
     @PostConstruct
     @Scheduled (cron = "* * 1 * * *")
     public void fetchVirusData() throws IOException, InterruptedException {
+
+        List<LocationStats> newStats = new ArrayList<>();
 
         // make a http call using httpclient ->since java 11
         HttpClient client = HttpClient.newHttpClient();
@@ -54,11 +61,22 @@ public class CoronaVirusDataService {
 
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(csvBodyReader);
         for (CSVRecord record : records) {
-            String province = record.get("Province/State");
-//            String country = record.get("Country/Region");
-//            String lat = record.get("lat");
-            System.out.println(province);
+            LocationStats locationStats = new LocationStats();
+            locationStats.setState(record.get("Province/State"));
+            locationStats.setCountry(record.get("Country/Region"));
+            locationStats.setLatestTotalCases(Integer.parseInt(record.get(record.size()-1)));
+
+            System.out.println(locationStats);
+            newStats.add(locationStats);
         }
 
+        this.allStats = newStats;
+
     }
+
+    public List<LocationStats> getStats(){
+        return this.allStats;
+    }
+
+
 }
