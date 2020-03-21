@@ -5,24 +5,43 @@
 <head>
     <title>Corona-Virus Tracker Application</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" media="all"
-          href="../../css/gtvg.css" th:href="@{/css/gtvg.css}" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 
 <body>
 
-<table>
-    <tr>
-        <th>State</th>
-        <th>Country</th>
-        <th>Total cases reported</th>
-    </tr>
-    <tr th:each="location : ${locationStats}">
-        <td th:text="${location.state}"></td>
-        <td th:text="${location.country}"></td>
-        <td th:text="${location.latestTotalCases}"></td>
-    </tr>
-</table>
+<h1>Corona-Virus Tracker Application</h1>
+<p>This application lists the current number of cases reported across the globe.</p>
+<p><small>This app is just for learning purpose</small></p>
+
+<div class="jumbotron">
+    <h1 class="display-4" th:text="${totalReportedCases}"></h1>
+    <p class="lead">Total cases reported as of today</p>
+    <hr class="my-4">
+    <p><span>New cases reported since previous day </span>
+        <span class="btn btn-danger" th:text="${totalNewCases}"></span></p>
+</div>
+
+<div class="container">
+    <table class="table table-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th>State</th>
+                <th>Country</th>
+                <th>Total cases reported</th>
+                <th>Changes since last day</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="location : ${locationStats}">
+                <td th:text="${location.state}"></td>
+                <td th:text="${location.country}"></td>
+                <td th:text="${location.latestTotalCases}"></td>
+                <td th:text="${location.diffFromPrevDay}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 </body>
 

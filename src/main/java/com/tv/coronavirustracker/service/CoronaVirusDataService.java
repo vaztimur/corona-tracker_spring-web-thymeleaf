@@ -64,7 +64,12 @@ public class CoronaVirusDataService {
             LocationStats locationStats = new LocationStats();
             locationStats.setState(record.get("Province/State"));
             locationStats.setCountry(record.get("Country/Region"));
-            locationStats.setLatestTotalCases(Integer.parseInt(record.get(record.size()-1)));
+
+            int latestCases = Integer.parseInt(record.get(record.size() - 1));
+            int prevDayCases = Integer.parseInt(record.get(record.size()- 2));
+            locationStats.setDiffFromPrevDay(latestCases-prevDayCases);
+
+            locationStats.setLatestTotalCases(latestCases);
 
             System.out.println(locationStats);
             newStats.add(locationStats);
@@ -78,5 +83,14 @@ public class CoronaVirusDataService {
         return this.allStats;
     }
 
+
+    /*
+    * DISCLAIMERS:
+    *
+    * 1) Avoid saving state/values in Spring services
+    * 2) Write tests for your code
+    * 3) Data validity depends on the source
+    *
+    * */
 
 }
